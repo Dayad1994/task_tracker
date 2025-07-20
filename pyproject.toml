@@ -8,3 +8,10 @@ dependencies = []
 
 [project.scripts]
 task-tracker = "task_tracker:main"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = ["task_tracker"]
