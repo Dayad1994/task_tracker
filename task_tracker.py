@@ -6,28 +6,37 @@ import sys
 
 
 class CommandNotFoundError(Exception):
-    '''Исключение, вызываемое при вводе несуществующей команды.'''
+    '''Exception raised when an unknown command is entered.'''
+    
     def __init__(self, command: str):
         self.command = command
-        super().__init__(f"Команда '{command}' не существует.")
+        super().__init__(f"Command '{command}' not exists.")
 
 
 def _read_json() -> dict[str: list, str: int]:
+    '''Read and convert json data from file to python object.'''
+    
     with open('tasks.json', 'r', encoding='utf-8') as file:
         json_data = json.load(file)
     return json_data
 
 
 def _write_json(python_data: dict[str: list, str: int]) -> None:
+    '''Convert and write python object to json data to file.'''
+    
     with open('tasks.json', 'w', encoding='utf-8') as file:
         json.dump(python_data, file)
 
 
 def _now_datetime() -> str:
+    '''Return the current timestamp in the following format: "20.07.2025 15:56"'''
+
     return datetime.datetime.now().strftime('%d.%m.%Y %H:%M')
 
 
 def _add(json_data: dict[str: list, str: int], description: str) -> None:
+    '''Create and add a new task to the list of tracked tasks.'''
+    
     json_data['curr_id'] += 1
     task = {
         'id': json_data['curr_id'],
@@ -43,6 +52,8 @@ def _update(
     json_data: dict[str: list, str: int],
     id: int,
     description: str) -> None:
+    '''Update the task description by ID.'''
+    
     for i in range(len(json_data['tasks'])):
         if json_data['tasks'][i]['id'] == int(id):
             json_data['tasks'][i]['updated'] = _now_datetime()
@@ -53,6 +64,8 @@ def _update(
 
 
 def _delete(json_data: dict[str: list, str: int], id: int) -> None:
+    '''Delete the task by ID.'''
+    
     for i in range(len(json_data['tasks'])):
         if json_data['tasks'][i]['id'] == int(id):
             json_data['tasks'].pop(i)
@@ -62,6 +75,8 @@ def _delete(json_data: dict[str: list, str: int], id: int) -> None:
 
 
 def _mark_in_progress(json_data: dict[str: list, str: int], id: int) -> None:
+    '''Mark task status to 'in-progress' by ID.'''
+    
     for i in range(len(json_data['tasks'])):
         if json_data['tasks'][i]['id'] == int(id):
             json_data['tasks'][i]['status'] = 'in-progress'
@@ -72,6 +87,8 @@ def _mark_in_progress(json_data: dict[str: list, str: int], id: int) -> None:
 
 
 def _mark_done(json_data: dict[str: list, str: int], id: id) -> None:
+    '''Mark task status to 'done' by ID.'''
+    
     for i in range(len(json_data['tasks'])):
         if json_data['tasks'][i]['id'] == int(id):
             json_data['tasks'][i]['status'] = 'done'
@@ -82,6 +99,9 @@ def _mark_done(json_data: dict[str: list, str: int], id: id) -> None:
 
 
 def _list(json_data: dict[str: list, str: int], _, status=None) -> None:
+    '''Show all tasks or tasks filtered by the given status in the console.'''
+    
+    # Show names of task fields
     print(
         'id',
         'description'.rjust(30),
@@ -89,8 +109,10 @@ def _list(json_data: dict[str: list, str: int], _, status=None) -> None:
         'created'.rjust(16),
         'updated'.rjust(16),
         sep=' | ')
+    # seperate line between names and values of task fields
     print('-'*87)
-
+    
+    # values of task fields
     for task in json_data['tasks']:
         if not status or task['status'] == status:
             print(
@@ -103,6 +125,8 @@ def _list(json_data: dict[str: list, str: int], _, status=None) -> None:
 
 
 def _help() -> None:
+    '''Help command'''
+    
     print(
         'add               command add new task. includes one positional argument - description',
         '                  add "go to job"\n',
@@ -122,12 +146,17 @@ def _help() -> None:
 
 
 def _check_json() -> None:
+    '''Creates the database file in the current directory if it doesn't exist.'''
+    
     if 'tasks.json' not in os.listdir():
         tasks = {"tasks": [], "curr_id": 0}
         _write_json(tasks)
 
 
 def _run_cmd(cmd: list) -> None:
+    '''Runs the provided command with arguments, accessing the database for reading and writing.'''
+    
+    # Read json data from db
     json_data = _read_json()
 
     match cmd[0]:
@@ -150,10 +179,13 @@ def _run_cmd(cmd: list) -> None:
         case _:
             raise CommandNotFoundError(cmd[0])
 
+    # write data to db
     _write_json(json_data)
 
 
 def main() -> None:
+    '''Main function of app'''
+    # create db if it doesn't exist
     _check_json()
     
     try:
