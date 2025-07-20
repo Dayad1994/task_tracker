@@ -1,4 +1,5 @@
-# main.py
+'''Main module of app'''
+
 import datetime
 import json
 import os
