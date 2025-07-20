@@ -1,7 +1,10 @@
 [project]
 name = "task-tracker"
 version = "0.1.0"
-description = "Add your description here"
+description = "Task tracker cli app"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = []
+
+[project.scripts]
+task-tracker = "task_tracker:main"
