@@ -21,34 +21,34 @@ task_tracker/
 
 ## Installation
 
-I am using the `uv` package manager. Therefore, you need to [install `uv`](https://docs.astral.sh/uv/getting-started/installation/) before installing the application.
+Requires Python 3.11 or newer to be installed.
 
-1. Clone the repository:
+1. Install **pipx**:
+   _pipx_ is a tool to install and run Python CLI apps in isolated environments. It lets you globally install Python-based command-line tools without affecting system or project environments.
 
 ```bash
-   git clone git@github.com:Dayad1994/task_tracker.git
-   cd task_tracker
+   python3 -m pip install pipx
 ```
 
-2. Install dependencies:
+2. Install project:
 
 ```bash
-    uv sync
+    pipx install git+https://github.com/Dayad1994/task_tracker.git
 ```
 
-3. Install project as os app:
+3. Create a directory for the project and navigate into it:
 
 ```bash
-    uv pip install .
+    mkdir task-tracker
+    cd task-tracker
 ```
 
 ## Usage
 
-To run the application, activate venv and execute:
+To run the app, execute:
 
 ```bash
-source .venv/bin/activate
-task-tracker list
+task-tracker add "go to school"
 ```
 
 Example:
@@ -72,7 +72,7 @@ task-tracker list in-progress
 
 ## Requirements
 
-- Python 3.13 or higher
+- Python 3.11 or higher
 
 ## Testing
 
