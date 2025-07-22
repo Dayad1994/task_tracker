@@ -6,10 +6,39 @@ import os
 import sys
 
 
+from typing import TypedDict
+
+
+class CommandNotFoundError(Exception):
+    '''Exception raised when an unknown command is entered.'''
+    
+    def __init__(self, command: str):
+        self.command = command
+        super().__init__(f"Command '{command}' not exists.")
+
+
+class Task(TypedDict):  
+    id: int
+    description: str
+    status: str
+    created: str
+    updated: str
+
+
+class TaskData(TypedDict):
+    tasks: list[Task]
+    curr_id: int
+
+
 def main() -> None:
     '''Main function of app'''
     # create db if it doesn't exist
     _check_db()
+    
+    # check for args
+    if len(sys.argv) < 2:
+        _help()
+        return
     
     try:
         # cli args without main cmd 'task-tracker'
@@ -20,6 +49,8 @@ def main() -> None:
         print("Нет задачи с таким id!")
     except ValueError as err:
         print('id must be number')
+    except TypeError as err:
+        print(err)
 
 
 def _check_db() -> None:
@@ -30,26 +61,26 @@ def _check_db() -> None:
         _write_db(tasks)
 
 
-def _read_db() -> dict[str: list, str: int]:
+def _read_db() -> TaskData:
     '''Read and convert json data from db to python object.'''
     
     with open('tasks.json', 'r', encoding='utf-8') as file:
-        json_data: dict[str: list, str: int] = json.load(file)
+        json_data: TaskData = json.load(file)
     return json_data
 
 
-def _write_db(python_data: dict[str: list, str: int]) -> None:
+def _write_db(python_data: TaskData) -> None:
     '''Convert and write python object to json data to db.'''
     
     with open('tasks.json', 'w', encoding='utf-8') as file:
         json.dump(python_data, file)
 
 
-def _run_cmd(cmd: str, *args: list) -> None:
+def _run_cmd(cmd: str, *args: tuple) -> None:
     '''Runs the provided command with arguments, accessing the database for reading and writing.'''
     
     # Read json data from db
-    json_data: dict[str: list, str: int] = _read_db()
+    json_data: TaskData = _read_db()
 
     match cmd:
         case 'help':
@@ -96,16 +127,17 @@ def _help() -> None:
     )
 
 
-def _add(json_data: dict[str: list, str: int], description: str) -> None:
+def _add(json_data: TaskData, description: str) -> None:
     '''Create and add a new task to the list of tracked tasks.'''
     
     json_data['curr_id'] += 1
+    now_time = _now_datetime()
     task = {
         'id': json_data['curr_id'],
         'description': description.strip(),
         'status': 'todo',
-        'created': _now_datetime(),
-        'updated': _now_datetime()
+        'created': now_time,
+        'updated': now_time
     }
     json_data['tasks'].append(task)
 
@@ -117,56 +149,49 @@ def _now_datetime() -> str:
 
 
 def _update(
-    json_data: dict[str: list, str: int],
+    json_data: TaskData,
     id: int,
     description: str) -> None:
     '''Update the task description by ID.'''
     
+    _update_task(json_data, id, description=description.strip())
+
+
+def _find_index_of_task(json_data: TaskData, id: int) -> int:
     for i in range(len(json_data['tasks'])):
         if json_data['tasks'][i]['id'] == int(id):
-            json_data['tasks'][i]['updated'] = _now_datetime()
-            json_data['tasks'][i]['description'] = description.strip()
-            break
+            return i
     else:
         raise IndexError
 
 
-def _delete(json_data: dict[str: list, str: int], id: int) -> None:
+def _update_task(json_data: TaskData, id: int, **fields) -> None:
+    index = _find_index_of_task(json_data, id)
+    task = json_data['tasks'][index]
+    task.update(fields)
+    task['updated'] = _now_datetime()
+
+
+def _delete(json_data: TaskData, id: int) -> None:
     '''Delete the task by ID.'''
     
-    for i in range(len(json_data['tasks'])):
-        if json_data['tasks'][i]['id'] == int(id):
-            json_data['tasks'].pop(i)
-            break
-    else:
-        raise IndexError
+    index_of_task =_find_index_of_task(json_data, id)
+    json_data['tasks'].pop(index_of_task)
 
 
-def _mark_in_progress(json_data: dict[str: list, str: int], id: int) -> None:
+def _mark_in_progress(json_data: TaskData, id: int) -> None:
     '''Mark task status to 'in-progress' by ID.'''
-    
-    for i in range(len(json_data['tasks'])):
-        if json_data['tasks'][i]['id'] == int(id):
-            json_data['tasks'][i]['status'] = 'in-progress'
-            json_data['tasks'][i]['updated'] = _now_datetime()
-            break
-    else:
-        raise IndexError
+
+    _update_task(json_data, id, status='in-progress')
 
 
-def _mark_done(json_data: dict[str: list, str: int], id: int) -> None:
+def _mark_done(json_data: TaskData, id: int) -> None:
     '''Mark task status to 'done' by ID.'''
     
-    for i in range(len(json_data['tasks'])):
-        if json_data['tasks'][i]['id'] == int(id):
-            json_data['tasks'][i]['status'] = 'done'
-            json_data['tasks'][i]['updated'] = _now_datetime()
-            break
-    else:
-        raise IndexError
+    _update_task(json_data, id, status='done')          
 
 
-def _list(json_data: dict[str: list, str: int], _, status=None) -> None:
+def _list(json_data: TaskData, _, status=None) -> None:
     '''Show all tasks or tasks filtered by the given status in the console.'''
     
     # Show names of task fields
@@ -190,11 +215,3 @@ def _list(json_data: dict[str: list, str: int], _, status=None) -> None:
                 task['created'],
                 task['updated'],
                 sep=' | ')
-
-
-class CommandNotFoundError(Exception):
-    '''Exception raised when an unknown command is entered.'''
-    
-    def __init__(self, command: str):
-        self.command = command
-        super().__init__(f"Command '{command}' not exists.")
