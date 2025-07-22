@@ -15,9 +15,3 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 py-modules = ["task_tracker"]
-
-[tool.uv]
-# read dependencies from *project*
-
-[tool.uv.dev-dependencies]
-pytest = "*"

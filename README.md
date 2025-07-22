@@ -78,7 +78,6 @@ In the project directory, create a virtual environment and install the project i
 
 ```bash
     uv venv
-    uv pip install -e .
 ```
 
 ## Requirements
