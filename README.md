@@ -38,6 +38,8 @@ Requires Python 3.11 or newer to be installed.
 
 3. Create a directory for the project and navigate into it:
 
+The application creates a JSON-based database file upon launch. To avoid cluttering your working directory, it's recommended to run it from a separate folder.
+
 ```bash
     mkdir task-tracker
     cd task-tracker
@@ -68,6 +70,15 @@ task-tracker list
 task-tracker list done
 task-tracker list todo
 task-tracker list in-progress
+```
+
+## Development
+
+In the project directory, create a virtual environment and install the project in editable mode. I recommend using the uv package manager.
+
+```bash
+    uv venv
+    uv pip install -e .
 ```
 
 ## Requirements

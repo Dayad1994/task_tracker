@@ -208,3 +208,7 @@ __marimo__/
 
 # DB file
 tasks.json
+
+# uv
+uv.lock
+.python-version
