@@ -1,17 +1,17 @@
 [project]
-name = "task-tracker"
+name = "tasker"
 version = "0.1.0"
 description = "Task tracker cli app"
 readme = "README.md"
 requires-python = ">=3.11"
-
+dependencies = ["typer"]
 
 [project.scripts]
-task-tracker = "task_tracker:main"
+tasker = "tasker:main"
 
 [build-system]
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-py-modules = ["task_tracker"]
+py-modules = ["tasker"]
