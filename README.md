@@ -11,12 +11,10 @@ This app allows users to manage tasks through a simple command-line interface. Y
 ```
 task_tracker/
 ├── .gitignore            # python gitignore file
-├── .python-version       # fixed python version
 ├── LICENSE               # license of project
 ├── README.md             # Documentation
 ├── pyproject.toml        # Config file of project
-├── task_tracker.py       # Entry point of the application
-└── uv.lock               # fixed environments
+└── task_tracker.py       # Entry point of the application
 ```
 
 ## Installation
