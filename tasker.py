@@ -41,14 +41,14 @@ def main() -> None:
         return
     
     try:
-        # cli args without main cmd 'task-tracker'
+        # cli args without main cmd 'tasker'
         _run_cmd(*sys.argv[1:])
     except CommandNotFoundError as err:
         print(err)
     except IndexError as err:
-        print("Нет задачи с таким id!")
+        print("There isn't task with this id!")
     except ValueError as err:
-        print('id must be number')
+        print(err)
     except TypeError as err:
         print(err)
 
@@ -107,28 +107,25 @@ def _run_cmd(cmd: str, *args: tuple) -> None:
 
 
 def _help() -> None:
-    '''Help command'''
-    
-    print(
-        'add               command add new task. includes one positional argument - description',
-        '                  add "go to job"\n',
-        'update            command update description of task. includes two positional args: id, description',
-        '                  update 1 "got to job and gym"\n',
-        'delete            command delete task. includes one positional arg - id',
-        '                  delete 1\n',
-        'mark-done         command mark status of task to done. includes one positional arg - id',
-        '                  mark-done 1\n',
-        'mark-in-progress  command mark status of task to in-progress. includes one positional arg - id',
-        '                  mark-in-progress 1\n',
-        'list              command print tasks. includes zero or one positional arg - done/in-progress/todo',
-        '                  list - print all tasks',
-        '                  list todo - print tasks with "todo" status\n',
-        sep='\n'
-    )
+    """Help command"""
+
+    commands = [
+        ("add", "Command to add a new task. Includes one positional argument - description", '`add "go to job"`'),
+        ("update", "Command to update the description of a task. Includes two positional args: id, description", '`update 1 "go to job and gym"`'),
+        ("delete", "Command to delete a task. Includes one positional arg - id", '`delete 1`'),
+        ("mark-done", "Command to mark a task as done. Includes one positional arg - id", '`mark-done 1`'),
+        ("mark-in-progress", "Command to mark a task as in-progress. Includes one positional arg - id", '`mark-in-progress 1`'),
+        ("list", "Command to print tasks. Includes zero or one positional arg - done/in-progress/todo", '`list`, `list todo`'),
+    ]
+
+    for cmd, desc, example in commands:
+        print(f"{cmd.ljust(18)}{desc}\n{' ' * 18}Example: {example}\n")
 
 
 def _add(json_data: TaskData, description: str) -> None:
     '''Create and add a new task to the list of tracked tasks.'''
+    
+    _is_valid_description(description)
     
     json_data['curr_id'] += 1
     now_time = _now_datetime()
@@ -148,13 +145,32 @@ def _now_datetime() -> str:
     return datetime.datetime.now().strftime('%d.%m.%Y %H:%M')
 
 
+def _is_valid_description(desc: str):
+    if len(desc) < 5:
+        raise ValueError('description must be longer than 4 symbols')
+
+
 def _update(
     json_data: TaskData,
     id: int,
     description: str) -> None:
     '''Update the task description by ID.'''
     
+    _is_valid_id(id)
+    _is_valid_description(description)
     _update_task(json_data, id, description=description.strip())
+
+
+def _is_valid_id(id: str):
+    if not id.isdigit() or int(id) < 1:
+        raise ValueError('id must be int and more than 0')
+
+
+def _update_task(json_data: TaskData, id: int, **fields) -> None:
+    index = _find_index_of_task(json_data, id)
+    task = json_data['tasks'][index]
+    task.update(fields)
+    task['updated'] = _now_datetime()
 
 
 def _find_index_of_task(json_data: TaskData, id: int) -> int:
@@ -165,35 +181,33 @@ def _find_index_of_task(json_data: TaskData, id: int) -> int:
         raise IndexError
 
 
-def _update_task(json_data: TaskData, id: int, **fields) -> None:
-    index = _find_index_of_task(json_data, id)
-    task = json_data['tasks'][index]
-    task.update(fields)
-    task['updated'] = _now_datetime()
-
-
 def _delete(json_data: TaskData, id: int) -> None:
     '''Delete the task by ID.'''
     
+    _is_valid_id(id)
     index_of_task =_find_index_of_task(json_data, id)
     json_data['tasks'].pop(index_of_task)
 
 
 def _mark_in_progress(json_data: TaskData, id: int) -> None:
     '''Mark task status to 'in-progress' by ID.'''
-
+    
+    _is_valid_id(id)
     _update_task(json_data, id, status='in-progress')
 
 
 def _mark_done(json_data: TaskData, id: int) -> None:
     '''Mark task status to 'done' by ID.'''
     
+    _is_valid_id(id)
     _update_task(json_data, id, status='done')          
 
 
 def _list(json_data: TaskData, _, status=None) -> None:
     '''Show all tasks or tasks filtered by the given status in the console.'''
     
+    _is_valid_status(status)
+
     # Show names of task fields
     print(
         'id',
@@ -215,3 +229,8 @@ def _list(json_data: TaskData, _, status=None) -> None:
                 task['created'],
                 task['updated'],
                 sep=' | ')
+
+
+def _is_valid_status(status: str):
+    if status not in (None, 'todo', 'done', 'in-progress'):
+        raise ValueError('Status must be done, todo, in-progrees or None')
