@@ -97,7 +97,7 @@ def _run_cmd(cmd: str, *args: tuple) -> None:
         case 'mark-done':
             _mark_done(json_data, *args)
         case 'list':
-            _list(json_data, cmd, *args)
+            _list(json_data, *args)
             return
         case _:
             raise CommandNotFoundError(cmd)
@@ -161,8 +161,8 @@ def _update(
     _update_task(json_data, id, description=description.strip())
 
 
-def _is_valid_id(id: str):
-    if not id.isdigit() or int(id) < 1:
+def _is_valid_id(id: int):
+    if id < 1:
         raise ValueError('id must be int and more than 0')
 
 
@@ -203,7 +203,7 @@ def _mark_done(json_data: TaskData, id: int) -> None:
     _update_task(json_data, id, status='done')          
 
 
-def _list(json_data: TaskData, _, status=None) -> None:
+def _list(json_data: TaskData, status=None) -> None:
     '''Show all tasks or tasks filtered by the given status in the console.'''
     
     _is_valid_status(status)
