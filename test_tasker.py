@@ -2,7 +2,6 @@ import json
 import os
 import tempfile
 import unittest
-
 from contextlib import redirect_stdout
 from io import StringIO
 from unittest.mock import patch
@@ -379,7 +378,7 @@ class TestDatabaseFunctions(unittest.TestCase):
         tasker.check_db(self.temp_tasks_path)
         
         self.assertTrue(os.path.exists(self.temp_tasks_path))
-        with open(self.temp_tasks_path, 'r', encoding='utf-8') as file:
+        with open(self.temp_tasks_path, encoding='utf-8') as file:
             data = json.load(file)
         self.assertEqual(data, {"tasks": [], "curr_id": 0})
     
@@ -397,7 +396,7 @@ class TestDatabaseFunctions(unittest.TestCase):
         
         tasker.write_db(self.temp_tasks_path, sample_data)
         
-        with open(self.temp_tasks_path, 'r', encoding='utf-8') as file:
+        with open(self.temp_tasks_path, encoding='utf-8') as file:
             data = json.load(file)
     
         self.assertEqual(data, sample_data)

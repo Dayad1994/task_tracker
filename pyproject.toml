@@ -4,7 +4,6 @@ version = "0.1.0"
 description = "Task tracker cli app"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = ["typer"]
 
 [project.scripts]
 tasker = "tasker:main"
@@ -15,3 +14,46 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 py-modules = ["tasker"]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.12.5",
+]
+
+[tool.ruff]
+line-length = 80
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle (PEP8)
+    "F",  # pyflakes (ошибки, неиспользуемый код)
+    "B",  # flake8-bugbear (подозрительный код)
+    "I",  # isort (порядок импортов)
+    "N",  # pep8-naming (имена переменных и классов)
+    "S",  # bandit (безопасность)
+    "C90", # mccabe (сложность функций)
+    "D",  # pydocstyle (докстринги)
+    "UP", # pyupgrade (обновления для новых версий Python)
+    "ANN", # flake8-annotations (type hints)
+    "PT",  # flake8-pytest-style (тесты)
+    "SIM", # flake8-simplify (упрощения)
+    "ARG", # flake8-unused-arguments
+    "PL",  # pylint style (частично)
+]
+
+# Исключения (например, миграции Django или сторонние библиотеки)
+exclude = [
+    ".venv",
+    "migrations",
+    "__pycache__",
+    "build",
+    "dist",
+]
+
+# Настройки для docstring-правил (если включён `D`)
+[tool.ruff.lint.pydocstyle]
+convention = "google"  # или "numpy", "pep257"
+
+# Настройка сложности функций (C901)
+[tool.ruff.lint.mccabe]
+max-complexity = 10
