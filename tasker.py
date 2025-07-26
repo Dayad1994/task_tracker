@@ -181,7 +181,7 @@ def update(
 
 
 def _is_valid_id(id: int) -> None:
-    if id < 1:
+    if int(id) < 1:
         raise ValueError('id must be int and more than 0')
 
 
