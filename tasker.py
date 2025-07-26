@@ -1,4 +1,8 @@
 '''Main module of app'''
+__all__ = [
+    'TaskData', 'main', 'check_db', 'read_db', 'write_db', 'add',
+    'update', 'delete', 'mark_done', 'mark_in_progress', 'list'
+    ]
 
 import datetime
 import json
@@ -7,6 +11,9 @@ import sys
 
 
 from typing import TypedDict
+
+
+DB_FILE = 'tasks.json'
 
 
 class CommandNotFoundError(Exception):
@@ -33,11 +40,11 @@ class TaskData(TypedDict):
 def main() -> None:
     '''Main function of app'''
     # create db if it doesn't exist
-    _check_db()
+    check_db(DB_FILE)
     
     # check for args
     if len(sys.argv) < 2:
-        _help()
+        help()
         return
     
     try:
@@ -53,26 +60,26 @@ def main() -> None:
         print(err)
 
 
-def _check_db() -> None:
+def check_db(path: str) -> None:
     '''Creates the database file in the current directory if it doesn't exist.'''
     
-    if 'tasks.json' not in os.listdir():
+    if path not in os.listdir():
         tasks = {"tasks": [], "curr_id": 0}
-        _write_db(tasks)
+        write_db(path, tasks)
 
 
-def _read_db() -> TaskData:
+def read_db(path: str) -> TaskData:
     '''Read and convert json data from db to python object.'''
     
-    with open('tasks.json', 'r', encoding='utf-8') as file:
+    with open(path, 'r', encoding='utf-8') as file:
         json_data: TaskData = json.load(file)
     return json_data
 
 
-def _write_db(python_data: TaskData) -> None:
+def write_db(path: str, python_data: TaskData) -> None:
     '''Convert and write python object to json data to db.'''
     
-    with open('tasks.json', 'w', encoding='utf-8') as file:
+    with open(path, 'w', encoding='utf-8') as file:
         json.dump(python_data, file)
 
 
@@ -80,33 +87,33 @@ def _run_cmd(cmd: str, *args: tuple) -> None:
     '''Runs the provided command with arguments, accessing the database for reading and writing.'''
     
     # Read json data from db
-    json_data: TaskData = _read_db()
+    json_data: TaskData = read_db(DB_FILE)
 
     match cmd:
         case 'help':
-            _help()
+            help()
             return
         case 'add':
-            _add(json_data, *args)
+            add(json_data, *args)
         case 'update':
-            _update(json_data, *args)
+            update(json_data, *args)
         case 'delete':
-            _delete(json_data, *args)
+            delete(json_data, *args)
         case 'mark-in-progress':
-            _mark_in_progress(json_data, *args)
+            mark_in_progress(json_data, *args)
         case 'mark-done':
-            _mark_done(json_data, *args)
+            mark_done(json_data, *args)
         case 'list':
-            _list(json_data, *args)
+            list(json_data, *args)
             return
         case _:
             raise CommandNotFoundError(cmd)
 
     # write data to db
-    _write_db(json_data)
+    write_db(DB_FILE, json_data)
 
 
-def _help() -> None:
+def help() -> None:
     """Help command"""
 
     commands = [
@@ -122,7 +129,7 @@ def _help() -> None:
         print(f"{cmd.ljust(18)}{desc}\n{' ' * 18}Example: {example}\n")
 
 
-def _add(json_data: TaskData, description: str) -> None:
+def add(json_data: TaskData, description: str) -> None:
     '''Create and add a new task to the list of tracked tasks.'''
     
     _is_valid_description(description)
@@ -150,7 +157,7 @@ def _is_valid_description(desc: str):
         raise ValueError('description must be longer than 4 symbols')
 
 
-def _update(
+def update(
     json_data: TaskData,
     id: int,
     description: str) -> None:
@@ -181,7 +188,7 @@ def _find_index_of_task(json_data: TaskData, id: int) -> int:
         raise IndexError
 
 
-def _delete(json_data: TaskData, id: int) -> None:
+def delete(json_data: TaskData, id: int) -> None:
     '''Delete the task by ID.'''
     
     _is_valid_id(id)
@@ -189,21 +196,21 @@ def _delete(json_data: TaskData, id: int) -> None:
     json_data['tasks'].pop(index_of_task)
 
 
-def _mark_in_progress(json_data: TaskData, id: int) -> None:
+def mark_in_progress(json_data: TaskData, id: int) -> None:
     '''Mark task status to 'in-progress' by ID.'''
     
     _is_valid_id(id)
     _update_task(json_data, id, status='in-progress')
 
 
-def _mark_done(json_data: TaskData, id: int) -> None:
+def mark_done(json_data: TaskData, id: int) -> None:
     '''Mark task status to 'done' by ID.'''
     
     _is_valid_id(id)
     _update_task(json_data, id, status='done')          
 
 
-def _list(json_data: TaskData, status=None) -> None:
+def list(json_data: TaskData, status=None) -> None:
     '''Show all tasks or tasks filtered by the given status in the console.'''
     
     _is_valid_status(status)

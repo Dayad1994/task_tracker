@@ -87,7 +87,7 @@ In the project directory, create a virtual environment and install the project i
 Run tests with:
 
 ```bash
-pytest
+python -m unittest
 ```
 
 ## Contributing
