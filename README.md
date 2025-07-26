@@ -1,20 +1,22 @@
-# Task tracker
+# Tasker – Simple CLI Task Tracker
 
-A simple CLI python app.
+A fast and minimal command-line tool to manage your tasks.
 
 ## Description
 
-This app allows users to manage tasks through a simple command-line interface. You can add, update, delete, and list tasks, as well as change their status.
+A simple command-line tool to manage personal tasks.
+You can add, update, delete, list tasks, and mark them as in progress or done.
 
 ## Project Structure
 
 ```
-task_tracker/
-├── .gitignore            # python gitignore file
-├── LICENSE               # license of project
-├── README.md             # Documentation
-├── pyproject.toml        # Config file of project
-└── task_tracker.py       # Entry point of the application
+tasker/
+├── .gitignore            # Standard Python gitignore
+├── LICENSE               # Project license
+├── README.md             # Project documentation
+├── pyproject.toml        # Build system and ruff/formatting config
+├── tasker.py             # Application entry point
+└── test_tasker.py        # Unit tests
 ```
 
 ## Installation
@@ -22,6 +24,7 @@ task_tracker/
 Requires Python 3.11 or newer to be installed.
 
 1. Install **pipx**:
+
    _pipx_ is a tool to install and run Python CLI apps in isolated environments. It lets you globally install Python-based command-line tools without affecting system or project environments.
 
 ```bash
@@ -31,7 +34,7 @@ Requires Python 3.11 or newer to be installed.
 2. Install project:
 
 ```bash
-    pipx install git+https://github.com/Dayad1994/task_tracker.git
+    pipx install git+https://github.com/Dayad1994/tasker.git
 ```
 
 3. Create a directory for the project and navigate into it:
@@ -39,35 +42,35 @@ Requires Python 3.11 or newer to be installed.
 The application creates a JSON-based database file upon launch. To avoid cluttering your working directory, it's recommended to run it from a separate folder.
 
 ```bash
-    mkdir task-tracker
-    cd task-tracker
+    mkdir tasker
+    cd tasker
 ```
 
 ## Usage
 
-To run the app, execute:
+If installed via `pipx`, you can run the app from anywhere using:
 
 ```bash
-task-tracker add "go to school"
+tasker <command> [args]
 ```
 
 Example:
 
 ```bash
 # Adding a new task
-task-tracker add "Buy groceries"
+tasker add "Buy groceries"
 # Updating and deleting tasks
-task-tracker update 1 "Buy groceries and cook dinner"
-task-tracker delete 1
+tasker update 1 "Buy groceries and cook dinner"
+tasker delete 1
 # Marking a task as in progress or done
-task-tracker mark-in-progress 1
-task-tracker mark-done 1
+tasker mark-in-progress 1
+tasker mark-done 1
 # Listing all tasks
-task-tracker list
+tasker list
 # Listing tasks by status
-task-tracker list done
-task-tracker list todo
-task-tracker list in-progress
+tasker list done
+tasker list todo
+tasker list in-progress
 ```
 
 ## Development
@@ -77,6 +80,8 @@ In the project directory, create a virtual environment and install the project i
 ```bash
     uv venv
 ```
+
+**uv** is a fast Python package manager compatible with pip and venv.
 
 ## Requirements
 
@@ -102,7 +107,7 @@ Contributions are welcome! Please follow these steps:
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](https://chatgpt.com/c/LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
 
 ## Authors
 
