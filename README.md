@@ -4,7 +4,7 @@ A fast and minimal command-line tool to manage your tasks.
 
 ## Description
 
-A simple command-line tool to manage personal tasks.
+This project is a solution to one of the [project ideas from roadmap.sh](https://roadmap.sh/projects/task-tracker).
 You can add, update, delete, list tasks, and mark them as in progress or done.
 
 ## Project Structure
