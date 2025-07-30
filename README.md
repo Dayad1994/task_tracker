@@ -34,7 +34,7 @@ Requires Python 3.11 or newer to be installed.
 2. Install project:
 
 ```bash
-    pipx install git+https://github.com/Dayad1994/tasker.git
+    pipx install git+https://github.com/dayanik/tasker.git
 ```
 
 3. Create a directory for the project and navigate into it:
