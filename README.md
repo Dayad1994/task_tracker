@@ -111,4 +111,4 @@ This project is licensed under the MIT License. See the [LICENSE](./LICENSE) fil
 
 ## Authors
 
-- [Dayan Iskhakov](https://github.com/Dayad1994)
+- [Dayan Iskhakov](https://github.com/dayanik)
