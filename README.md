@@ -1,73 +1,75 @@
 # Tasker – Simple CLI Task Tracker
 
-A fast and minimal command-line tool to manage your tasks.
+**Tasker** — быстрый и минималистичный инструмент командной строки для управления задачами.
 
 ## Description
 
-This project is a solution to one of the [project ideas from roadmap.sh](https://roadmap.sh/projects/task-tracker).
-You can add, update, delete, list tasks, and mark them as in progress or done.
+Этот проект реализован в рамках одного из [идей проектов с roadmap.sh](https://roadmap.sh/projects/task-tracker).  
+С помощью Tasker вы можете добавлять, обновлять, удалять, просматривать задачи, а также отмечать их как "в процессе" или "завершённые".
 
 ## Project Structure
 
 ```
 tasker/
-├── .gitignore            # Standard Python gitignore
-├── LICENSE               # Project license
-├── README.md             # Project documentation
-├── pyproject.toml        # Build system and ruff/formatting config
-├── tasker.py             # Application entry point
-└── test_tasker.py        # Unit tests
+├── .gitignore            # Стандартный gitignore для Python
+├── LICENSE               # Лицензия проекта
+├── README.md             # Документация проекта
+├── pyproject.toml        # Конфигурация сборки и форматирования (ruff)
+├── tasker.py             # Точка входа в приложение
+└── test_tasker.py        # Юнит-тесты
 ```
 
 ## Installation
 
-Requires Python 3.11 or newer to be installed.
+Требуется Python версии 3.11 или новее.
 
-1. Install **pipx**:
-
-   _pipx_ is a tool to install and run Python CLI apps in isolated environments. It lets you globally install Python-based command-line tools without affecting system or project environments.
+1. Установите **pipx** — утилиту для установки и запуска Python CLI-приложений в изолированных окружениях. Это позволит глобально установить инструменты командной строки без влияния на системные или проектные зависимости.
 
 ```bash
-   python3 -m pip install pipx
+python3 -m pip install pipx
 ```
 
-2. Install project:
+2. Установите проект:
 
 ```bash
-    pipx install git+https://github.com/dayanik/tasker.git
+pipx install git+https://github.com/dayanik/tasker.git
 ```
 
-3. Create a directory for the project and navigate into it:
+3. Создайте отдельную директорию для работы с проектом и перейдите в неё:
 
-The application creates a JSON-based database file upon launch. To avoid cluttering your working directory, it's recommended to run it from a separate folder.
+Приложение создаёт файл базы данных в формате JSON при первом запуске. Чтобы избежать засорения текущей рабочей папки, рекомендуется запускать программу из отдельного каталога.
 
 ```bash
-    mkdir tasker
-    cd tasker
+mkdir tasker
+cd tasker
 ```
 
 ## Usage
 
-If installed via `pipx`, you can run the app from anywhere using:
+Если установлено через `pipx`, запускать приложение можно из любой папки:
 
 ```bash
 tasker <command> [args]
 ```
 
-Example:
+Примеры:
 
 ```bash
-# Adding a new task
+# Добавить новую задачу
 tasker add "Buy groceries"
-# Updating and deleting tasks
+
+# Обновить или удалить задачу
 tasker update 1 "Buy groceries and cook dinner"
 tasker delete 1
-# Marking a task as in progress or done
+
+# Пометить задачу как в процессе или выполненную
 tasker mark-in-progress 1
 tasker mark-done 1
-# Listing all tasks
+
+# Показать все задачи
 tasker list
-# Listing tasks by status
+
+# Показать задачи по статусу
 tasker list done
 tasker list todo
 tasker list in-progress
@@ -75,21 +77,21 @@ tasker list in-progress
 
 ## Development
 
-In the project directory, create a virtual environment and install the project in editable mode. I recommend using the uv package manager.
+Для разработки создайте виртуальное окружение и установите проект в режиме редактирования. Рекомендую использовать пакетный менеджер **uv**:
 
 ```bash
-    uv venv
+uv venv
 ```
 
-**uv** is a fast Python package manager compatible with pip and venv.
+**uv** — это быстрый менеджер пакетов, совместимый с pip и venv.
 
 ## Requirements
 
-- Python 3.11 or higher
+- Python 3.11 и выше
 
 ## Testing
 
-Run tests with:
+Запуск тестов:
 
 ```bash
 python -m unittest
@@ -97,17 +99,17 @@ python -m unittest
 
 ## Contributing
 
-Contributions are welcome! Please follow these steps:
+Буду рад вашим изменениям! Пожалуйста, следуйте этим шагам:
 
-1. Fork the repository.
-2. Create a new branch: `git checkout -b feature-name`.
-3. Make your changes and commit: `git commit -m "Description of changes"`.
-4. Push to the branch: `git push origin feature-name`.
-5. Open a pull request.
+1. Форкните репозиторий.
+2. Создайте новую ветку: `git checkout -b feature-name`.
+3. Внесите изменения и сделайте коммит: `git commit -m "Description of changes"`.
+4. Отправьте ветку на сервер: `git push origin feature-name`.
+5. Создайте pull request.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
+Проект лицензирован под MIT License. Подробнее в файле [LICENSE](./LICENSE).
 
 ## Authors
 
